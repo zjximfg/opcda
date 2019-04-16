@@ -1,0 +1,32 @@
+opc-config:
+#  opc server
+  serverCatalog:
+    OPC.SimaticNET: B6EACB30-42D5-11d0-9517-0020AFAA4B3C
+    OPC.SimaticNet.AE: 047F5910-6CC5-11d3-9C2A-00105A3DD3AF
+    OPC.SimaticNet.DP: 5F30A70F-8256-4ee3-8FCD-A65CF62C25CA
+    OPC.SimaticNET.PD: FDEB47B4-DD9C-459e-9B9E-E40D1C06A69F
+    OPC.SimaticNetAlarms: 047F5910-6CC5-11d3-9C2A-00105A3DD3AC
+    OPC.SimaticNetAlarmsSNMP: 5EDB164E-FEF2-4093-A1FD-8EA25CA58178
+#    opc connection
+  protocolIds[0]: S7
+  protocolIds[1]: TCP
+  protocolIds[2]: UDP
+  protocolIds[3]: E-mail
+  protocolIds[4]: FDL
+  protocolIds[5]: FMS
+  protocolIds[6]: ISO
+  protocolIds[7]: ISO-on-TCP
+  protocolIds[8]: Point-to-point
+#    opc items
+  dataTypes[0]: X
+  dataTypes[1]: B
+  dataTypes[2]: W
+  dataTypes[3]: D
+  dataTypes[4]: INT
+  dataTypes[5]: DINT
+  dataTypes[6]: REAL
+
+  itemCatalogs[0]: M
+  itemCatalogs[1]: I
+  itemCatalogs[2]: Q
+  itemCatalogs[3]: DB
