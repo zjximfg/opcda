@@ -12,11 +12,14 @@ public class OpcGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer groupId;
     private String groupName;
-    private Integer updateRate;  //ms
+    private Integer updateRateId;
     private Integer opcConnectionId;
     private Integer deleted = 0;
     private OpcConnection opcConnection;
     private List<OpcItem> opcItems;
+
+    @Transient
+    private UpdateRate updateRate;
     private boolean isOnline; //=true,在线状态，不存入数据库
     //private Group group; //opc 工具源类型
 }

@@ -16,7 +16,9 @@ public interface OpcItemService {
 
     Integer insertOpcItem(OpcItem opcItem);
 
-    PageResponse<OpcItem> getOpcItemsByPage(int currentPage, int pageSize, String searchKey);
+    PageResponse<OpcItem> getOpcItemsByPage(int currentPage, int pageSize, String searchKey, Integer groupId);
+
+    List<OpcItem> getOpcItemsByPid(Integer opcGroupId);
 
     Integer updateOpcItem(OpcItem opcItem);
 

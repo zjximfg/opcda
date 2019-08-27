@@ -92,17 +92,24 @@ public class OpcItemServiceImpl implements OpcItemService {
     }
 
     @Override
-    public PageResponse<OpcItem> getOpcItemsByPage(int currentPage, int pageSize, String searchKey) {
+    public PageResponse<OpcItem> getOpcItemsByPage(int currentPage, int pageSize, String searchKey, Integer groupId) {
         PageHelper.startPage(currentPage, pageSize);
         Example example = new Example(OpcItem.class);
-        Example.Criteria criteria = example.createCriteria().andEqualTo("deleted", 0);
+        Example.Criteria criteria = example.createCriteria().andEqualTo("deleted", 0).andEqualTo("opcGroupId", groupId);
         if (!StringUtils.isEmpty(searchKey)) {
             criteria.andLike("itemName", "%" + searchKey + "%")
                     .orLike("comment", "%" + searchKey + "%");
         }
 
         Page<OpcItem> page = (Page<OpcItem>) opcItemMapper.selectByExample(example);
-        return new PageResponse<OpcItem>(page.getTotal(), page.getResult());
+        return new PageResponse<>(page.getTotal(), page.getResult());
+    }
+
+    @Override
+    public List<OpcItem> getOpcItemsByPid(Integer opcGroupId) {
+        OpcItem opcItem = new OpcItem();
+        opcItem.setOpcGroupId(opcGroupId);
+        return opcItemMapper.select(opcItem);
     }
 
     @Override

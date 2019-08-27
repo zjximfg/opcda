@@ -25,4 +25,6 @@ public class OpcConfig {
     private List<String> dataTypes = new ArrayList<>();
     private List<String> itemCatalogs = new ArrayList<>();
 
+    private Integer utgardReadUpdateRate = 100;
+
 }

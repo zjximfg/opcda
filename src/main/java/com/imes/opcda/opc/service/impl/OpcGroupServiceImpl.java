@@ -4,6 +4,7 @@ import com.imes.opcda.opc.mapper.OpcGroupMapper;
 import com.imes.opcda.opc.pojo.OpcGroup;
 import com.imes.opcda.opc.service.OpcConnectionService;
 import com.imes.opcda.opc.service.OpcGroupService;
+import com.imes.opcda.opc.service.UpdateRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,18 @@ public class OpcGroupServiceImpl implements OpcGroupService {
     private OpcGroupMapper opcGroupMapper;
     @Autowired
     private OpcConnectionService opcConnectionService;
+    @Autowired
+    private UpdateRateService updateRateService;
 
     @Override
     public List<OpcGroup> getOpcGroupByPid(Integer pid) {
         OpcGroup opcGroup = new OpcGroup();
         opcGroup.setOpcConnectionId(pid);
-        return opcGroupMapper.select(opcGroup);
+        List<OpcGroup> groups = opcGroupMapper.select(opcGroup);
+        for (OpcGroup group : groups) {
+            group.setUpdateRate(updateRateService.getUpdateRateById(group.getUpdateRateId()));
+        }
+        return groups;
     }
 
     @Override
@@ -29,9 +36,11 @@ public class OpcGroupServiceImpl implements OpcGroupService {
         opcGroup.setDeleted(0);
         List<OpcGroup> opcGroups = opcGroupMapper.select(opcGroup);
         opcGroups.forEach(group -> {
-                    group.setOpcConnection(opcConnectionService.getConnectionById(group.getOpcConnectionId()));
-                }
-        );
+            group.setOpcConnection(opcConnectionService.getConnectionById(group.getOpcConnectionId()));
+        });
+        opcGroups.forEach(group -> {
+            group.setUpdateRate(updateRateService.getUpdateRateById(group.getUpdateRateId()));
+        });
         return opcGroups;
     }
 

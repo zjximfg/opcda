@@ -7,6 +7,7 @@ import java.util.List;
 
 @Service
 public interface OpcServerService {
+
     List<String> getProgIds();
 
     List<String> getClsids();

@@ -30,3 +30,6 @@ opc-config:
   itemCatalogs[1]: I
   itemCatalogs[2]: Q
   itemCatalogs[3]: DB
+
+  utgardReadUpdateRate: 200
+

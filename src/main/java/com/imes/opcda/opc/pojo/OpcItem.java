@@ -1,6 +1,7 @@
 package com.imes.opcda.opc.pojo;
 
 import lombok.Data;
+import org.openscada.opc.lib.da.ItemState;
 
 import javax.persistence.*;
 
@@ -23,10 +24,15 @@ public class OpcItem {
     private Integer opcGroupId;
     private Integer deleted = 0;
 
-
-    // private String value; //当前值 ，不存入数据库，
+    @Transient
+    private String value; //当前值 ，不存入数据库，
+    @Transient
     private boolean isOnline; //=true,在线状态，不存入数据库
+    @Transient
     private OpcConnection opcConnection;
+    @Transient
     private OpcGroup opcGroup;
+    @Transient
+    private ItemState itemState; //用于存储要保存到数据库中的实时数据
 
 }

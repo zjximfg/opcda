@@ -46,8 +46,9 @@ public class OpcItemController {
     @RequestMapping("getOpcItemsByPage")
     public ResponseEntity<PageResponse<OpcItem>> getOpcItemsByPage(@RequestParam("currentPage") int currentPage,
                                                                    @RequestParam("pageSize") int pageSize,
-                                                                   @RequestParam("searchKey") String searchKey) {
-        PageResponse<OpcItem> pageResponse = opcItemService.getOpcItemsByPage(currentPage, pageSize, searchKey);
+                                                                   @RequestParam("searchKey") String searchKey,
+                                                                   @RequestParam("groupId") Integer groupId) {
+        PageResponse<OpcItem> pageResponse = opcItemService.getOpcItemsByPage(currentPage, pageSize, searchKey, groupId);
         return ResponseEntity.ok(pageResponse);
     }
 

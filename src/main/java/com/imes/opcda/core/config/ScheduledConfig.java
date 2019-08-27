@@ -10,6 +10,6 @@ import java.util.concurrent.Executors;
 public class ScheduledConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(10));
+        taskRegistrar.setScheduler(Executors.newScheduledThreadPool(20));
     }
 }

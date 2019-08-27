@@ -3,6 +3,7 @@ package com.imes.opcda.opc.pojo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -17,4 +18,6 @@ public class OpcServer {
     private String domain;            //本机加入的域
     private String serverUser;        //本机的用户名
     private String serverPassword;    //本机用户名对应的密码
+
+    private List<OpcConnection> opcConnections;
 }
