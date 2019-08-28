@@ -62,7 +62,8 @@ public class OpcTasks implements CommandLineRunner {
      *
      * @throws Exception
      */
-    private void initProgress() throws Exception {
+    public void initProgress() throws Exception {
+        initFinished = false;
         // 设置读取周期时间
         readUpdateRate = opcConfig.getUtgardReadUpdateRate();
         // 获取 updateRate 列表
@@ -83,24 +84,31 @@ public class OpcTasks implements CommandLineRunner {
     /**
      * 2. 当初始化数据完成后，对数据进行通讯读写（包括 建立服务器，连接服务器，添加组和Item，同步周期更新）
      */
-    private void communicationProgress() {
+    public void communicationProgress() {
         initFinished = currentOpcServer != null;
+        // 重启服务器时，中断进程，同时将isReading 复位，同步读取自动结束。
+        if (threadCommunication != null && !threadCommunication.isInterrupted()) {
+            threadCommunication.interrupt();
+        }
+        UtgardUtils.isReading = false;
         if (initFinished) {
-            threadCommunication = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    opcdaService.communication(currentOpcServer, readUpdateRate);
-                }
+            threadCommunication = new Thread(() -> {
+                opcdaService.communication(currentOpcServer, readUpdateRate);
             });
             threadCommunication.start();
         }
     }
 
-    private void dataAcquisitionProgress() {
-        threadDataAcquisition = new Thread(()->{
+    public void dataAcquisitionProgress() {
+        if (threadDataAcquisition != null && !threadDataAcquisition.isInterrupted()) {
+            threadDataAcquisition.interrupt();
+        }
+        threadDataAcquisition = new Thread(() -> {
             // 等待连接完成，正式开始读取数据。。。。堵塞线程
             while (!UtgardUtils.isReading) {
-
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
                 try {
                     Thread.sleep(1000);
                     log.info("等待记录数据.......");
@@ -113,7 +121,5 @@ public class OpcTasks implements CommandLineRunner {
         });
         threadDataAcquisition.start();
     }
-
-
 
 }

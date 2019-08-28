@@ -2,6 +2,7 @@ package com.imes.opcda.core.service.impl;
 
 import com.imes.opcda.core.pojo.ScheduledTask;
 import com.imes.opcda.core.service.OpcdaService;
+import com.imes.opcda.core.tasks.OpcTasks;
 import com.imes.opcda.core.utils.UtgardUtils;
 import com.imes.opcda.opc.pojo.*;
 import com.imes.opcda.opc.service.*;
@@ -31,7 +32,8 @@ public class OpcdaServiceImpl implements OpcdaService {
     private OpcItemService opcItemService;
     @Autowired
     private OpcItemStateService opcItemStateService;
-
+    @Autowired
+    private OpcTasks opcTasks;
 
 
     /**
@@ -84,6 +86,9 @@ public class OpcdaServiceImpl implements OpcdaService {
         UtgardUtils.autoReconnectionSync(updateRate);
 
         while (!UtgardUtils.isConnected) {
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
             try {
                 log.info("正在尝试与服务器进行连接.........");
                 Thread.sleep(2000);
@@ -119,6 +124,9 @@ public class OpcdaServiceImpl implements OpcdaService {
         //建立任务的连接池
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(scheduledTasks.size() + 2);
         for (ScheduledTask scheduledTask : scheduledTasks) {
+            if (!scheduledTask.getScheduledFuture().isCancelled()) {
+                scheduledTask.getScheduledFuture().cancel(true);
+            }
             scheduledTask.setScheduledFuture(scheduledExecutorService.scheduleAtFixedRate(scheduledTask, 5, Long.valueOf(scheduledTask.getUpdateRate().getRate()), TimeUnit.MILLISECONDS));
         }
     }
@@ -185,6 +193,31 @@ public class OpcdaServiceImpl implements OpcdaService {
         });
         System.out.println(scheduledTasks.size());
         return scheduledTasks;
+    }
+
+    @Override
+    public void restartServer() {
+        try {
+            opcTasks.initProgress();
+            opcTasks.communicationProgress();
+            opcTasks.dataAcquisitionProgress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public String getServerState() {
+        if (UtgardUtils.isReading) {
+            return "Server is reading variable!";
+        } else if (UtgardUtils.isConnected) {
+            return "Server is connected!";
+        } else if (OpcTasks.initFinished) {
+            return "Server initialization completed!";
+        } else {
+            return "Server IS ERROR!";
+        }
     }
 
     /**

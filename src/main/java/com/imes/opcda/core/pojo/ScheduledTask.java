@@ -4,7 +4,6 @@ import com.imes.opcda.opc.pojo.OpcGroup;
 import com.imes.opcda.opc.pojo.OpcItemState;
 import com.imes.opcda.opc.pojo.UpdateRate;
 import com.imes.opcda.opc.service.OpcItemStateService;
-import com.imes.opcda.opc.service.impl.OpcItemStateServiceImpl;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,6 +24,9 @@ public class ScheduledTask implements Runnable {
 
     @Override
     public void run() {
+        if (scheduledFuture.isCancelled()) {
+            return;
+        }
         for (OpcGroup opcGroup : opcGroupList) {
             System.out.println(opcGroup);
             if (opcGroup.getOpcItems().size() > 0) {

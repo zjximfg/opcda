@@ -3,7 +3,6 @@ package com.imes.opcda.core.service;
 import com.imes.opcda.core.pojo.ScheduledTask;
 import com.imes.opcda.opc.pojo.OpcServer;
 import com.imes.opcda.opc.pojo.UpdateRate;
-import com.imes.opcda.opc.service.OpcItemStateService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +31,10 @@ public interface OpcdaService {
     List<Integer> getDataAcquisitionUpdateRate(OpcServer opcServer);
 
     List<ScheduledTask> getScheduledTasks(OpcServer opcServer, List<UpdateRate> updateRates, List<Integer> dataAcquisitionUpdateRates);
+
+    void restartServer();
+
+    String getServerState();
 
     //void alarmAcquisition(OpcServer opcServer, List<Alarm>);
 

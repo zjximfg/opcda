@@ -53,16 +53,16 @@ public class UtgardUtils {
     /**
      * 建立连接，如果异常表示连接失败（与opc服务器）----- 暂时不用
      */
-    public static void connect() throws Exception {
-        if (server == null) {
-            log.error("没有建立opc服务器！");
-            throw new Exception("没有初始化server");
-        }
-
-        server.connect();
-        isConnected = true;
-        log.info("服务器连接成功！");
-    }
+//    public static void connect() throws Exception {
+//        if (server == null) {
+//            log.error("没有建立opc服务器！");
+//            throw new Exception("没有初始化server");
+//        }
+//
+//        server.connect();
+//        isConnected = true;
+//        log.info("服务器连接成功！");
+//    }
 
 
     /**
@@ -135,6 +135,9 @@ public class UtgardUtils {
 
         // 堵塞线程
         while (isReading) {
+            if (Thread.currentThread().isInterrupted()){
+                break;
+            }
             try {
                 Thread.sleep(10*1000);
             } catch (InterruptedException e) {
