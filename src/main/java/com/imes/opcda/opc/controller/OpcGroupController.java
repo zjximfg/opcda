@@ -4,10 +4,7 @@ import com.imes.opcda.opc.pojo.OpcGroup;
 import com.imes.opcda.opc.service.OpcGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +17,11 @@ public class OpcGroupController {
     @RequestMapping("getAllOpcGroups")
     public ResponseEntity<List<OpcGroup>> getAllOpcGroups() {
         return ResponseEntity.ok(opcGroupService.getAllOpcGroups());
+    }
+
+    @GetMapping("list")
+    public ResponseEntity<List<OpcGroup>> getOpcGroupsByPid(@RequestParam(value = "connectionId") Integer connectionId) {
+        return ResponseEntity.ok(opcGroupService.getOpcGroupByPid(connectionId));
     }
 
     @RequestMapping("insertOpcGroup")

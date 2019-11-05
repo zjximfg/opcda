@@ -24,9 +24,7 @@ public interface OpcdaService {
 
     //List<Alarm> initializeAlarm();
 
-
     void dataAcquisition(List<ScheduledTask> scheduledTasks);
-
 
     List<Integer> getDataAcquisitionUpdateRate(OpcServer opcServer);
 

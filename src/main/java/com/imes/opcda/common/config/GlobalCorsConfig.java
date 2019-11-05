@@ -14,7 +14,7 @@ public class GlobalCorsConfig {
         //1.添加CORS配置信息
         CorsConfiguration configuration = new CorsConfiguration();
         //1）允许的域名，不要写*，否则cookie无法使用
-        configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://localhost:8000");
         //2）是否发送Cookie信息
         configuration.setAllowCredentials(true);
         //3）允许请求方式

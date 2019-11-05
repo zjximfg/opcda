@@ -36,6 +36,19 @@ public class OpcdaServiceImpl implements OpcdaService {
     private OpcTasks opcTasks;
 
 
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
+    }
+
+    public void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
+        this.scheduledExecutorService = scheduledExecutorService;
+    }
+
+    private ScheduledExecutorService scheduledExecutorService;
+
+
+
+
     /**
      * 初始化所有的opcItems 数据放入到内存中，用于通讯读取数据
      *
@@ -95,6 +108,7 @@ public class OpcdaServiceImpl implements OpcdaService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(UtgardUtils.connectState);
             UtgardUtils.isConnected = StringUtils.equals(UtgardUtils.connectState, "CONNECTED");
         }
 
@@ -122,9 +136,9 @@ public class OpcdaServiceImpl implements OpcdaService {
     public void dataAcquisition(List<ScheduledTask> scheduledTasks) {
         log.info("开始记录数据..... ");
         //建立任务的连接池
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(scheduledTasks.size() + 2);
+        scheduledExecutorService = Executors.newScheduledThreadPool(scheduledTasks.size() + 2);
         for (ScheduledTask scheduledTask : scheduledTasks) {
-            if (!scheduledTask.getScheduledFuture().isCancelled()) {
+            if (scheduledTask.getScheduledFuture()!=null && !scheduledTask.getScheduledFuture().isCancelled()) {
                 scheduledTask.getScheduledFuture().cancel(true);
             }
             scheduledTask.setScheduledFuture(scheduledExecutorService.scheduleAtFixedRate(scheduledTask, 5, Long.valueOf(scheduledTask.getUpdateRate().getRate()), TimeUnit.MILLISECONDS));
@@ -200,6 +214,9 @@ public class OpcdaServiceImpl implements OpcdaService {
         try {
             opcTasks.initProgress();
             opcTasks.communicationProgress();
+            if (scheduledExecutorService!=null) {
+                scheduledExecutorService.shutdownNow();
+            }
             opcTasks.dataAcquisitionProgress();
         } catch (Exception e) {
             e.printStackTrace();

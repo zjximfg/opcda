@@ -1,8 +1,6 @@
 package com.imes.opcda.opc.pojo;
 
-import com.imes.opcda.common.utils.UUIdGenId;
 import lombok.Data;
-import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

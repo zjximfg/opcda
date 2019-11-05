@@ -16,20 +16,20 @@ import java.util.List;
 
 @Component
 @Slf4j
+//public class OpcTasks  {
 public class OpcTasks implements CommandLineRunner {
-
     public static boolean initFinished; //初始化完成标志位
-    public static int readUpdateRate; //读取的周期时间， 单位ms
+    private static int readUpdateRate; //读取的周期时间， 单位ms
 
     public static OpcServer currentOpcServer;
-    public static List<UpdateRate> updateRates;
-    public static List<Integer> dataAcquisitionUpdateRates;
-    public static List<ScheduledTask> scheduledTasks;
+    private static List<UpdateRate> updateRates;
+    private static List<Integer> dataAcquisitionUpdateRates;
+    private static List<ScheduledTask> scheduledTasks;
 
 
     // 线程
-    public static Thread threadDataAcquisition;
-    public static Thread threadCommunication;
+    private static Thread threadDataAcquisition;
+    private static Thread threadCommunication;
 
     @Autowired
     private OpcConfig opcConfig;

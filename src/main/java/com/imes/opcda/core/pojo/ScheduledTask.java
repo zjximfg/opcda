@@ -25,10 +25,10 @@ public class ScheduledTask implements Runnable {
     @Override
     public void run() {
         if (scheduledFuture.isCancelled()) {
+            Thread.currentThread().interrupt();
             return;
         }
         for (OpcGroup opcGroup : opcGroupList) {
-            System.out.println(opcGroup);
             if (opcGroup.getOpcItems().size() > 0) {
                 List<OpcItemState> opcItemStates = opcItemStateService.getOpcItemStateFromOpcGroups(opcGroup);
                 log.info(opcItemStates.toString());

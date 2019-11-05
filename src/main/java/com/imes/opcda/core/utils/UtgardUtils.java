@@ -31,6 +31,7 @@ public class UtgardUtils {
     public static void createServer(OpcServer opcServer, ScheduledExecutorService scheduledExecutorService) {
 
         if (opcServer == null) {
+            System.out.println("opcServer == null");
             return;
         }
 
@@ -47,6 +48,7 @@ public class UtgardUtils {
         server = new Server(connectionInformation, scheduledExecutorService);
         // 自动重连
         autoReconnectController = new AutoReconnectController(server);
+        System.out.println(server.toString());
         log.info("1. opc服务器创建完成！");
     }
 
@@ -66,7 +68,7 @@ public class UtgardUtils {
 
 
     /**
-     * 与服务器建立连接 （同步模式，自动重连）
+     * 与服务器建立连接 （异步模式，自动重连）
      * @param updateRate
      */
     public static void autoReconnectionSync(Integer updateRate) {
@@ -92,7 +94,7 @@ public class UtgardUtils {
     }
 
     /**
-     * 同步添加, 同时定义读取规则
+     * 异步添加, 同时定义读取规则
      * @param opcItems
      */
     public static void syncAdd(List<OpcItem> opcItems) {

@@ -4,8 +4,10 @@ import com.imes.opcda.common.pojo.OpcConfig;
 import com.imes.opcda.opc.mapper.OpcConnectionMapper;
 import com.imes.opcda.opc.pojo.OpcConnection;
 import com.imes.opcda.opc.pojo.OpcGroup;
+import com.imes.opcda.opc.pojo.OpcItem;
 import com.imes.opcda.opc.service.OpcConnectionService;
 import com.imes.opcda.opc.service.OpcGroupService;
+import com.imes.opcda.opc.service.OpcItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -20,6 +22,8 @@ public class OpcConnectionServiceImpl implements OpcConnectionService {
     private OpcConnectionMapper opcConnectionMapper;
     @Autowired
     private OpcGroupService opcGroupService;
+    @Autowired
+    private OpcItemService opcItemService;
 
     @Override
     public List<String> getProtocols() {
@@ -51,6 +55,10 @@ public class OpcConnectionServiceImpl implements OpcConnectionService {
     @Override
     public List<OpcConnection> updateConnection(OpcConnection opcConnection) {
         opcConnectionMapper.updateByPrimaryKey(opcConnection);
+        List<OpcItem> opcItemsByConnectionId = opcItemService.getOpcItemsByConnectionId(opcConnection.getConnectionId());
+        for (OpcItem opcItem : opcItemsByConnectionId) {
+            opcItemService.updateOpcItem(opcItem);
+        }
         return this.getAllConnections();
     }
 
@@ -74,12 +82,15 @@ public class OpcConnectionServiceImpl implements OpcConnectionService {
     @Override
     public List<OpcConnection> deleteConnection(OpcConnection opcConnection) {
         opcConnection.setDeleted(1);
-        opcConnectionMapper.updateByPrimaryKey(opcConnection);
+        opcConnectionMapper.updateByPrimaryKeySelective(opcConnection);
         return this.getAllConnections();
     }
 
     @Override
     public OpcConnection getConnectionById(Integer id) {
-        return opcConnectionMapper.selectByPrimaryKey(id);
+        OpcConnection opcConnection = new OpcConnection();
+        opcConnection.setConnectionId(id);
+        opcConnection.setDeleted(0);
+        return opcConnectionMapper.selectOne(opcConnection);
     }
 }

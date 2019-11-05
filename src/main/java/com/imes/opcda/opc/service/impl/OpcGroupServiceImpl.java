@@ -46,7 +46,6 @@ public class OpcGroupServiceImpl implements OpcGroupService {
 
     @Override
     public List<OpcGroup> insertOpcGroup(OpcGroup opcGroup) {
-        opcGroup.setOpcConnectionId(opcGroup.getOpcConnection().getConnectionId());
         opcGroup.setDeleted(0);
         opcGroupMapper.insert(opcGroup);
         return this.getAllOpcGroups();
@@ -54,16 +53,14 @@ public class OpcGroupServiceImpl implements OpcGroupService {
 
     @Override
     public List<OpcGroup> updateOpcGroup(OpcGroup opcGroup) {
-        opcGroup.setOpcConnectionId(opcGroup.getOpcConnection().getConnectionId());
         opcGroupMapper.updateByPrimaryKey(opcGroup);
         return this.getAllOpcGroups();
     }
 
     @Override
     public List<OpcGroup> deleteOpcGroup(OpcGroup opcGroup) {
-        opcGroup.setOpcConnectionId(opcGroup.getOpcConnection().getConnectionId());
         opcGroup.setDeleted(1);
-        opcGroupMapper.updateByPrimaryKey(opcGroup);
+        opcGroupMapper.updateByPrimaryKeySelective(opcGroup);
         return this.getAllOpcGroups();
     }
 
@@ -71,6 +68,7 @@ public class OpcGroupServiceImpl implements OpcGroupService {
     public OpcGroup getOpcGroupById(Integer groupId) {
         OpcGroup opcGroup = new OpcGroup();
         opcGroup.setGroupId(groupId);
-        return opcGroupMapper.selectByPrimaryKey(opcGroup);
+        opcGroup.setDeleted(0);
+        return opcGroupMapper.selectOne(opcGroup);
     }
 }

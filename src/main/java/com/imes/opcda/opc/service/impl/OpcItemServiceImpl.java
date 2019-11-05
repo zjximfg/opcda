@@ -85,8 +85,6 @@ public class OpcItemServiceImpl implements OpcItemService {
 
     @Override
     public Integer insertOpcItem(OpcItem opcItem) {
-        opcItem.setOpcConnectionId(opcItem.getOpcConnection().getConnectionId());
-        opcItem.setOpcGroupId(opcItem.getOpcGroup().getGroupId());
         opcItem.setItemName(this.createItemName(opcItem));
         return opcItemMapper.insert(opcItem);
     }
@@ -109,6 +107,14 @@ public class OpcItemServiceImpl implements OpcItemService {
     public List<OpcItem> getOpcItemsByPid(Integer opcGroupId) {
         OpcItem opcItem = new OpcItem();
         opcItem.setOpcGroupId(opcGroupId);
+        return opcItemMapper.select(opcItem);
+    }
+
+    @Override
+    public List<OpcItem> getOpcItemsByConnectionId(Integer opcConnectionId) {
+        OpcItem opcItem = new OpcItem();
+        opcItem.setOpcConnectionId(opcConnectionId);
+        opcItem.setDeleted(0);
         return opcItemMapper.select(opcItem);
     }
 
