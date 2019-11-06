@@ -15,6 +15,8 @@ public class HoistParams {
     private Integer id;
     private String name;
     private Double depth;   //提升高度 m
+    private Double maxHeight;   //最高点位置值
+    private Double minHeight;   //最低点位置值
     private Double power;   //提升机额定功率 MW
     private Double load;    //提升机额定载荷 MW
     private Double current; //额定电枢电流 A
@@ -37,6 +39,7 @@ public class HoistParams {
 //    滚筒轴承1温度
 //    滚筒轴承2温度
 //    设备状态
+    // 主电机状态
 
     private Integer frequencyMorningShiftId;
     private Integer frequencyMiddleShiftId;
@@ -57,7 +60,8 @@ public class HoistParams {
     private Integer armatureCurrentId;
     private Integer drum_1_T_id;
     private Integer drum_2_T_id;
-    private Integer stateId;
+    private Integer hoistStateId;
+    private Integer motorStateId;
 
 
 
@@ -100,6 +104,8 @@ public class HoistParams {
     @Transient
     private ActualValue drum_2_T;
     @Transient
-    private ActualValue state;
+    private ActualValue hoistState;
+    @Transient
+    private ActualValue motorState;
 
 }

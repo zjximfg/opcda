@@ -27,9 +27,4 @@ public class StatisticsDateBaseServiceImpl {
         // 整理成VO 返回
         return new Statistics(statisticsDate.getName(), accumValue);
     }
-
-    Statistics getStatisticsByDate(Calendar calendar, StatisticsDate statisticsDate, OpcItemStateService opcItemStateService) {
-
-    }
-
 }

@@ -1,9 +1,13 @@
 package com.imes.opcda.presentation.controller;
 
+import com.imes.opcda.presentation.pojo.HoistState;
+import com.imes.opcda.presentation.pojo.MotorState;
+import com.imes.opcda.presentation.service.HoistStateService;
+import com.imes.opcda.presentation.service.MotorStateService;
 import com.imes.opcda.presentation.service.PresentationService;
 import com.imes.opcda.presentation.vo.Accum;
+import com.imes.opcda.presentation.vo.Actual;
 import com.imes.opcda.presentation.vo.Chart;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +23,10 @@ public class PresentationController {
 
     @Autowired
     private PresentationService presentationService;
+    @Autowired
+    private HoistStateService hoistStateService;
+    @Autowired
+    private MotorStateService motorStateService;
 
     /**
      * 累计数据，当班勾数，当班产能，当天勾数，当天产能
@@ -45,7 +53,7 @@ public class PresentationController {
      * 图标，条形图，去过7天勾数
      * @return json
      */
-    @GetMapping("group/2")
+    @GetMapping("group/3")
     public ResponseEntity<List<Chart>> getGroupData_3() {
         //TODO
         List<Chart> charts = new ArrayList<>(7);
@@ -56,9 +64,69 @@ public class PresentationController {
      * 图标，折线图，当前的实时运行速度
      * @return json
      */
-    @GetMapping("group/2")
+    @GetMapping("group/4")
     public ResponseEntity<List<Chart>> getGroupData_4() {
-        List<Chart> charts = new ArrayList<>(7);
+        List<Chart> charts = presentationService.getGroup4();
         return ResponseEntity.ok(charts);
+    }
+
+    /**
+     * 大图旁的 实时数据反馈值
+     * @return json， 包括14个数值
+     */
+    @GetMapping("group/5")
+    public ResponseEntity<List<Actual>> getGroupData_5() {
+        List<Actual> actualList = presentationService.getGroup5();
+        return ResponseEntity.ok(actualList);
+    }
+
+    /**
+     * 每 2 秒 返回一次数据，实时的位置值和 最高点 及 最低点位置
+     * @return json， 包括4个数值 包装成4个Actual 对象
+     */
+    @GetMapping("group/6")
+    public ResponseEntity<List<Actual>> getGroupData_6() {
+        List<Actual> actualList = presentationService.getGroup6();
+        return ResponseEntity.ok(actualList);
+    }
+
+    /**
+     * 管理型数据，资料数据， 每小时访问一次
+     * @return json， 包装成Actual 对象
+     */
+    @GetMapping("group/7")
+    public ResponseEntity<List<Actual>> getGroupData_7() {
+        List<Actual> actualList = presentationService.getGroup7();
+        return ResponseEntity.ok(actualList);
+    }
+
+    /**
+     * 每2秒 请求一次，获取电枢电流的百分比
+     * @return json， 包装成1个Actual 对象
+     */
+    @GetMapping("group/8")
+    public ResponseEntity<List<Actual>> getGroupData_8() {
+        List<Actual> actualList = presentationService.getGroup8();
+        return ResponseEntity.ok(actualList);
+    }
+
+    /**
+     * 获取全部的设备状态列表。
+     * @return 设备状态列表
+     */
+    @GetMapping("hoistState/list")
+    public ResponseEntity<List<HoistState>> getHoistStateList() {
+        List<HoistState> hoistStateList = hoistStateService.getHoistStateList();
+        return ResponseEntity.ok(hoistStateList);
+    }
+
+    /**
+     * 获取全部的主状态列表。
+     * @return 主电机状态列表
+     */
+    @GetMapping("motorState/list")
+    public ResponseEntity<List<MotorState>> getMotorStateList() {
+        List<MotorState> motorStateList = motorStateService.getMotorStateList();
+        return ResponseEntity.ok(motorStateList);
     }
 }
