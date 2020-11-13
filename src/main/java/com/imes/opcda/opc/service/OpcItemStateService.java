@@ -14,7 +14,9 @@ public interface OpcItemStateService {
 
     Integer insertOpcItemStateList(List<OpcItemState> opcItemStates);
 
-    String getAccumValue(Timestamp startTimestamp, Timestamp endTimestamp, Integer itemId);
+   // String getAccumValue(Timestamp startTimestamp, Timestamp endTimestamp, Integer itemId);
 
     List<OpcItemState> getOpcItemStateBetweenStartTimeAndEndTime(Timestamp startTime, Timestamp endTime, Integer itemId);
+
+    String getCurrentValueFromOpcItemStateByItemId(Integer itemId);
 }

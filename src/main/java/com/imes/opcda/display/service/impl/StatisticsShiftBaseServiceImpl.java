@@ -28,9 +28,9 @@ public class StatisticsShiftBaseServiceImpl {
         Timestamp endTimeStamp = TimestampUtils.getTimeStamp(Calendar.getInstance());
 
         // 根据 起始时间戳 和 结束时间戳 查询 累计数据
-        String accumValue = opcItemStateService.getAccumValue(startTimeStamp, endTimeStamp, statisticsShift.getItemId());
+        //String accumValue = opcItemStateService.getAccumValue(startTimeStamp, endTimeStamp, statisticsShift.getItemId());
         // 整理成VO 返回
-        return new Statistics(statisticsShift.getName(), accumValue);
+        return new Statistics(statisticsShift.getName(), "");
     }
 
 

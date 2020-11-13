@@ -23,8 +23,8 @@ public class StatisticsDateBaseServiceImpl {
         calendar.set(Calendar.HOUR, statisticsDate.getShiftTime());
         // 得到起始时间戳
         // 根据 起始时间戳 和 结束时间戳 查询 累计数据
-        String accumValue = opcItemStateService.getAccumValue(TimestampUtils.getTimeStamp(calendar), TimestampUtils.getTimeStamp(Calendar.getInstance()), statisticsDate.getItemId());
+       // String accumValue = opcItemStateService.getAccumValue(TimestampUtils.getTimeStamp(calendar), TimestampUtils.getTimeStamp(Calendar.getInstance()), statisticsDate.getItemId());
         // 整理成VO 返回
-        return new Statistics(statisticsDate.getName(), accumValue);
+        return new Statistics(statisticsDate.getName(), "");
     }
 }

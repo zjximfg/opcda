@@ -7,6 +7,7 @@ import com.imes.opcda.core.utils.UtgardUtils;
 import com.imes.opcda.opc.pojo.OpcServer;
 import com.imes.opcda.opc.pojo.UpdateRate;
 import com.imes.opcda.opc.service.UpdateRateService;
+import com.imes.opcda.presentation.vo.Chart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -26,6 +27,8 @@ public class OpcTasks implements CommandLineRunner {
     private static List<Integer> dataAcquisitionUpdateRates;
     private static List<ScheduledTask> scheduledTasks;
 
+    public static List<Chart> group2ResultList;
+    public static List<Chart> group3ResultList;
 
     // 线程
     private static Thread threadDataAcquisition;
@@ -68,8 +71,8 @@ public class OpcTasks implements CommandLineRunner {
         readUpdateRate = opcConfig.getUtgardReadUpdateRate();
         // 获取 updateRate 列表
         updateRates = updateRateService.getUpdateRates();
-        log.info("updateRate列表是：" + updateRates);
-        log.info("读取时间间隔为：" + readUpdateRate);
+//        log.info("updateRate列表是：" + updateRates);
+//        log.info("读取时间间隔为：" + readUpdateRate);
         // 初始化数据 获取所有的opcItems 放入内存
         currentOpcServer = opcdaService.initializeData();
         // 获取入库周期列表

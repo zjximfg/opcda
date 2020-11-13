@@ -9,11 +9,13 @@ import com.imes.opcda.opc.pojo.OpcConnection;
 import com.imes.opcda.opc.pojo.OpcItem;
 import com.imes.opcda.opc.service.OpcConnectionService;
 import com.imes.opcda.opc.service.OpcItemService;
+import com.imes.opcda.opc.service.OpcItemStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +26,8 @@ public class OpcItemServiceImpl implements OpcItemService {
     private OpcConfig opcConfig;
     @Autowired
     private OpcItemMapper opcItemMapper;
+    @Autowired
+    private OpcItemStateService opcItemStateService;
 
     @Override
     public String createItemName(OpcItem opcItem) {
@@ -107,7 +111,16 @@ public class OpcItemServiceImpl implements OpcItemService {
     public List<OpcItem> getOpcItemsByPid(Integer opcGroupId) {
         OpcItem opcItem = new OpcItem();
         opcItem.setOpcGroupId(opcGroupId);
+        opcItem.setDeleted(0);
         return opcItemMapper.select(opcItem);
+    }
+
+    @Override
+    public OpcItem getOpcItemById(Integer id) {
+        OpcItem opcItem = new OpcItem();
+        opcItem.setDeleted(0);
+        opcItem.setId(id);
+        return opcItemMapper.selectOne(opcItem);
     }
 
     @Override
@@ -128,6 +141,23 @@ public class OpcItemServiceImpl implements OpcItemService {
     public Integer deleteOpcItem(OpcItem opcItem) {
         opcItem.setDeleted(1);
         return opcItemMapper.updateByPrimaryKey(opcItem);
+    }
+
+    /**
+     * 根据传入的 opcitem ID 获取内存中的通过通讯过来的当前value，并整理成opcItem LIST
+     * @param itemIdList 传入的 opcitem ID LIST
+     * @return 带有当前value 的opcItem LIST
+     */
+    @Override
+    public List<OpcItem> getCurrentByItemList(List<Integer> itemIdList) {
+        List<OpcItem> opcItemList = new ArrayList<>();
+        for (Integer id : itemIdList) {
+            OpcItem opcItemById = this.getOpcItemById(id);
+            String currentValueFromOpcItemStateByItemId = opcItemStateService.getCurrentValueFromOpcItemStateByItemId(id);
+            opcItemById.setValue(currentValueFromOpcItemStateByItemId);
+            opcItemList.add(opcItemById);
+        }
+        return opcItemList;
     }
 
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class MotorStateServiceImpl implements MotorStateService {
 
     @Autowired
-    private MotorStateMapper motorStateMapper
+    private MotorStateMapper motorStateMapper;
 
     @Override
     public List<MotorState> getMotorStateList() {

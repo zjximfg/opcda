@@ -1,6 +1,8 @@
 package com.imes.opcda.opc.service.impl;
 
+import com.imes.opcda.core.tasks.OpcTasks;
 import com.imes.opcda.opc.mapper.OpcItemStateMapper;
+import com.imes.opcda.opc.pojo.OpcConnection;
 import com.imes.opcda.opc.pojo.OpcGroup;
 import com.imes.opcda.opc.pojo.OpcItem;
 import com.imes.opcda.opc.pojo.OpcItemState;
@@ -11,6 +13,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +37,7 @@ public class OpcItemStateServiceImpl implements OpcItemStateService {
         for (OpcItem opcItem : opcGroup.getOpcItems()) {
             OpcItemState opcItemState = new OpcItemState();
             opcItemState.setId(UUID.randomUUID().toString());
-            opcItemState.setItemId(opcItem.getItemId());
+            opcItemState.setItemId(opcItem.getId());
             opcItemState.setItemName(opcItem.getItemName());
             opcItemState.setItemValue(opcItem.getValue() == null ? "读取失败" : opcItem.getValue());
             opcItemStates.add(opcItemState);
@@ -56,21 +59,28 @@ public class OpcItemStateServiceImpl implements OpcItemStateService {
      * @param itemId         变量的itemId
      * @return 函数的返回值是list 中的第一个值与最后一个值的差值。
      */
-    @Override
-    public String getAccumValue(Timestamp startTimeStamp, Timestamp endTimeStamp, Integer itemId) {
-        // 获取 list
-        List<OpcItemState> opcItemStates = this.getOpcItemStateBetweenStartTimeAndEndTime(startTimeStamp, endTimeStamp, itemId);
-        // 判断返回值是否为空？ 如果为空， 函数返回 ”0“
-        if (opcItemStates != null && opcItemStates.size() > 0) {
-            // 获取第一个值和最后一个值
-            double first = Double.parseDouble(opcItemStates.get(0).getItemValue());
-            double last = Double.parseDouble(opcItemStates.get(opcItemStates.size() - 1).getItemValue());
-            // 获取差值并取绝对值 并取整
-            double value = Math.round(Math.abs(first - last));
-            return String.valueOf(value);
-        }
-        return "0";
-    }
+   // @Override
+//    public String getAccumValue(Timestamp startTimeStamp, Timestamp endTimeStamp, Integer itemId) {
+//        // 获取 list
+//        List<OpcItemState> opcItemStates = this.getOpcItemStateBetweenStartTimeAndEndTime(startTimeStamp, endTimeStamp, itemId);
+//        // 判断返回值是否为空？ 如果为空， 函数返回 ”0“
+//        if (opcItemStates != null && opcItemStates.size() > 0) {
+////            // 获取第一个值和最后一个值
+////            double first = Double.parseDouble(opcItemStates.get(0).getItemValue());
+////            double last = Double.parseDouble(opcItemStates.get(opcItemStates.size() - 1).getItemValue());
+////
+////            // 获取差值并取绝对值 并取整
+////            double value = Math.round(Math.abs(first - last));
+//            // 获取最大值
+//            List<Double> list = new ArrayList<>();
+//            for (OpcItemState opcItemState : opcItemStates) {
+//                list.add(Double.parseDouble(opcItemState.getItemValue()));
+//            }
+//            Double value = Collections.max(list);
+//            return String.valueOf(value);
+//        }
+//        return "0";
+//    }
 
     /**
      * 根据起始时间戳， 结束时间戳，查询opcItemState中的值，返回List
@@ -87,8 +97,32 @@ public class OpcItemStateServiceImpl implements OpcItemStateService {
         example.setOrderByClause("datetime DESC");
         Example.Criteria criteria = example.createCriteria();
         // 查询条件
-        criteria.andEqualTo("itemId", itemId).andBetween("datetime", startTime, endTime);
+        criteria.andBetween("datetime", startTime, endTime).andEqualTo("itemId", itemId);
         return opcItemStateMapper.selectByExample(example);
 
+    }
+
+    /**
+     * 根据传入的itemId 查找内存中通讯并读取到的实时数值
+     *
+     * @param itemId 传入的itemId值
+     * @return 返回同时数据的值，以字符串的形式返回
+     */
+    @Override
+    public String getCurrentValueFromOpcItemStateByItemId(Integer itemId) {
+        for (OpcConnection opcConnection : OpcTasks.currentOpcServer.getOpcConnections()) {
+            for (OpcGroup opcGroup : opcConnection.getOpcGroups()) {
+                for (OpcItem opcItem : opcGroup.getOpcItems()) {
+                    if (opcItem.getId().equals(itemId)) {
+                        if (opcItem.getValue()!= null && !opcItem.getValue().isEmpty()) {
+                            return opcItem.getValue();
+                        } else{
+                            return "0";
+                        }
+                    }
+                }
+            }
+        }
+        return "0";
     }
 }

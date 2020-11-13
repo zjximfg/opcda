@@ -18,7 +18,7 @@ public class HoistParams {
     private Double maxHeight;   //最高点位置值
     private Double minHeight;   //最低点位置值
     private Double power;   //提升机额定功率 MW
-    private Double load;    //提升机额定载荷 MW
+    private Double normalLoad;    //提升机额定载荷 MW
     private Double current; //额定电枢电流 A
     private Integer startHourShift_morning;   //早班 的起始时间
     private Integer startHourShift_middle;    //中班 的起始时间
@@ -62,6 +62,8 @@ public class HoistParams {
     private Integer drum_2_T_id;
     private Integer hoistStateId;
     private Integer motorStateId;
+    private Integer frequencyId;
+    private Integer yieldId;
 
 
 
@@ -107,5 +109,9 @@ public class HoistParams {
     private ActualValue hoistState;
     @Transient
     private ActualValue motorState;
+    @Transient
+    private ActualValue frequency;
+    @Transient
+    private ActualValue yield;
 
 }

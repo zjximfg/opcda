@@ -1,11 +1,15 @@
 package com.imes.opcda.core.service.impl;
 
 import com.imes.opcda.core.pojo.ScheduledTask;
+import com.imes.opcda.core.service.Calculate7DaysValueTask;
+import com.imes.opcda.core.service.CurrentCurveSaveService;
 import com.imes.opcda.core.service.OpcdaService;
 import com.imes.opcda.core.tasks.OpcTasks;
 import com.imes.opcda.core.utils.UtgardUtils;
 import com.imes.opcda.opc.pojo.*;
 import com.imes.opcda.opc.service.*;
+import com.imes.opcda.presentation.pojo.HoistParams;
+import com.imes.opcda.presentation.service.HoistParamsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +37,15 @@ public class OpcdaServiceImpl implements OpcdaService {
     @Autowired
     private OpcItemStateService opcItemStateService;
     @Autowired
+    private OpcItemStateTempService opcItemStateTempService;
+    @Autowired
     private OpcTasks opcTasks;
+    @Autowired
+    private Calculate7DaysValueTask calculate7DaysValueTask;
+    @Autowired
+    private CurrentCurveSaveService currentCurveSaveService;
+    @Autowired
+    private HoistParamsService hoistParamsService;
 
 
     public ScheduledExecutorService getScheduledExecutorService() {
@@ -78,7 +90,7 @@ public class OpcdaServiceImpl implements OpcdaService {
             opcConnection.setOpcGroups(opcGroups);
         });
         opcServer.setOpcConnections(allConnections);
-        System.out.println(opcServer);
+//        System.out.println(opcServer);
         return opcServer;
     }
 
@@ -108,7 +120,7 @@ public class OpcdaServiceImpl implements OpcdaService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(UtgardUtils.connectState);
+//            System.out.println(UtgardUtils.connectState);
             UtgardUtils.isConnected = StringUtils.equals(UtgardUtils.connectState, "CONNECTED");
         }
 
@@ -143,6 +155,21 @@ public class OpcdaServiceImpl implements OpcdaService {
             }
             scheduledTask.setScheduledFuture(scheduledExecutorService.scheduleAtFixedRate(scheduledTask, 5, Long.valueOf(scheduledTask.getUpdateRate().getRate()), TimeUnit.MILLISECONDS));
         }
+        //开始计算7天累计值的任务
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        if (calculate7DaysValueTask.getScheduledFuture() != null && !calculate7DaysValueTask.getScheduledFuture().isCancelled()) {
+            calculate7DaysValueTask.getScheduledFuture().cancel(true);
+        }
+        calculate7DaysValueTask.setScheduledFuture(scheduledExecutorService.scheduleAtFixedRate(calculate7DaysValueTask, 5, 1000 * 60 * 10, TimeUnit.MILLISECONDS));
+
+        // 速度曲线缓冲
+        ScheduledExecutorService scheduledExecutorService1 = Executors.newScheduledThreadPool(1);
+        HoistParams hoistParamsOne = hoistParamsService.getHoistParamsOne();
+        currentCurveSaveService.setHoistParams(hoistParamsOne);
+        if (currentCurveSaveService.getScheduledFuture() !=null && !currentCurveSaveService.getScheduledFuture().isCancelled()) {
+            currentCurveSaveService.getScheduledFuture().cancel(true);
+        }
+        currentCurveSaveService.setScheduledFuture(scheduledExecutorService1.scheduleAtFixedRate(currentCurveSaveService, 5, 1000, TimeUnit.MILLISECONDS));
     }
 
     /**
@@ -192,6 +219,7 @@ public class OpcdaServiceImpl implements OpcdaService {
             // 每一个dataAcquisitionUpdateRates 获取添加对应的 UpdateRate
             ScheduledTask scheduledTask = new ScheduledTask();
             scheduledTask.setOpcItemStateService(opcItemStateService);
+            scheduledTask.setOpcItemStateTempService(opcItemStateTempService);
             scheduledTask.setUpdateRate(getUpdateRateByRate(rate, updateRates));
             // 获取相同保存周期的 opcGroups
             List<OpcGroup> opcGroups = new ArrayList<>();
@@ -205,7 +233,7 @@ public class OpcdaServiceImpl implements OpcdaService {
             scheduledTask.setOpcGroupList(opcGroups);
             scheduledTasks.add(scheduledTask);
         });
-        System.out.println(scheduledTasks.size());
+//        System.out.println(scheduledTasks.size());
         return scheduledTasks;
     }
 

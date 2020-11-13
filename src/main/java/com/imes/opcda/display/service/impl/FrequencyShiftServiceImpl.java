@@ -53,7 +53,7 @@ public class FrequencyShiftServiceImpl extends StatisticsShiftBaseServiceImpl im
 //            Timestamp endTimeStamp = this.getTimeStamp(Calendar.getInstance());
 //
 //            // 根据 起始时间戳 和 结束时间戳 查询 累计数据
-//            String accumValue = opcItemStateService.getAccumValue(startTimeStamp, endTimeStamp, frequencyShift.getItemId());
+//            String accumValue = opcItemStateService.getAccumValue(startTimeStamp, endTimeStamp, frequencyShift.getId());
 //            // 整理成VO 返回
 //            return new Statistics(frequencyShift.getName(), accumValue);
             return this.getStatistics(frequencyShift, opcItemStateService);

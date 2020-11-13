@@ -20,10 +20,13 @@ public interface OpcItemService {
 
     List<OpcItem> getOpcItemsByPid(Integer opcGroupId);
 
+    OpcItem getOpcItemById(Integer id);
+
     List<OpcItem> getOpcItemsByConnectionId(Integer opcConnectionId);
 
     Integer updateOpcItem(OpcItem opcItem);
 
     Integer deleteOpcItem(OpcItem opcItem);
 
+    List<OpcItem> getCurrentByItemList(List<Integer> itemIdList);
 }

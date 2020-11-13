@@ -6,12 +6,10 @@ import com.imes.opcda.opc.service.OpcItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("opcItem")
@@ -68,5 +66,12 @@ public class OpcItemController {
             return new ResponseEntity(HttpStatus.OK);
         }else
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping("getCurrentByItemList")
+    public ResponseEntity<List<OpcItem>> getCurrentByItemList(@RequestParam(name = "itemIdList") List<Integer> itemIdList) {
+        System.out.println(itemIdList);
+        // 从内存中获取当前的值并返回数据
+        return ResponseEntity.ok(opcItemService.getCurrentByItemList(itemIdList));
     }
 }

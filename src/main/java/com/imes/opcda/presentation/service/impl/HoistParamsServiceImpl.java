@@ -38,6 +38,9 @@ public class HoistParamsServiceImpl implements HoistParamsService {
         hoistParams.setDrum_1_T(actualValueService.getActualValueById(hoistParams.getDrum_1_T_id()));
         hoistParams.setDrum_2_T(actualValueService.getActualValueById(hoistParams.getDrum_2_T_id()));
         hoistParams.setHoistState(actualValueService.getActualValueById(hoistParams.getHoistStateId()));
-        return null;
+        hoistParams.setMotorState(actualValueService.getActualValueById(hoistParams.getMotorStateId()));
+        hoistParams.setFrequency(actualValueService.getActualValueById(hoistParams.getFrequencyId()));
+        hoistParams.setYield(actualValueService.getActualValueById(hoistParams.getYieldId()));
+        return hoistParams;
     }
 }

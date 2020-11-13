@@ -1,5 +1,6 @@
 package com.imes.opcda.presentation.controller;
 
+import com.imes.opcda.core.tasks.OpcTasks;
 import com.imes.opcda.presentation.pojo.HoistState;
 import com.imes.opcda.presentation.pojo.MotorState;
 import com.imes.opcda.presentation.service.HoistStateService;
@@ -9,12 +10,14 @@ import com.imes.opcda.presentation.vo.Accum;
 import com.imes.opcda.presentation.vo.Actual;
 import com.imes.opcda.presentation.vo.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,20 +36,20 @@ public class PresentationController {
      * @return json
      */
     @GetMapping("group/1")
-    public ResponseEntity<List<Accum>> getGroup1Data_1() {
-        List<Accum> accums = presentationService.getGroup1();
-        return ResponseEntity.ok(accums);
+    public ResponseEntity<List<Accum>> getGroupData_1() {
+        List<Accum> accumList = presentationService.getGroup1();
+        return ResponseEntity.ok(accumList);
     }
 
     /**
      * 图标，条形图，去过7天产量
-     * @return json
+     * @param endDate 请求的当前日期，格式为 yyyy-MM-dd
+     * @return json 数组
      */
     @GetMapping("group/2")
-    public ResponseEntity<List<Chart>> getGroupData_2() {
-        //TODO
-        List<Chart> charts = new ArrayList<>(7);
-        return ResponseEntity.ok(charts);
+    public ResponseEntity<List<Chart>> getGroupData_2(@RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        //List<Chart> charts = presentationService.getGroup2(endDate);
+        return ResponseEntity.ok(OpcTasks.group2ResultList);
     }
 
     /**
@@ -54,10 +57,9 @@ public class PresentationController {
      * @return json
      */
     @GetMapping("group/3")
-    public ResponseEntity<List<Chart>> getGroupData_3() {
-        //TODO
-        List<Chart> charts = new ArrayList<>(7);
-        return ResponseEntity.ok(charts);
+    public ResponseEntity<List<Chart>> getGroupData_3(@RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        //List<Chart> charts = presentationService.getGroup3(endDate);
+        return ResponseEntity.ok(OpcTasks.group3ResultList);
     }
 
     /**

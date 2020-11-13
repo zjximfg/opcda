@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class OpcItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer itemId;
+    private Integer id;
     private String itemName;
     private String itemCatalog; // DB,M,I,Q
     private Integer dbNum; // 仅当itemCatalog为DB时不为空

@@ -166,13 +166,14 @@ public class UtgardUtils {
                 opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsBoolean()));
                 break;
             case "B": // ????????
-                opcItem.setValue(itemState.getValue().toString());
+                opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsUnsigned().getValue()));
                 break;
             case "W": // ??????????
                 opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsUnsigned()));
                 break;
             case "D": // ok
-                opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsLong()));
+                //System.out.println(itemState.getValue());
+                opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsUnsigned()));
                 break;
             case "INT": // ok
                 opcItem.setValue(String.valueOf(itemState.getValue().getObjectAsShort()));
